@@ -11,6 +11,14 @@ Build
 .idea/**/dictionaries
 .idea/**/shelf
 
+**/Mannequins
+**/Mannequin_UE4
+**/LevelPrototyping
+**/ThirdPerson
+**/LearningKit_Games
+**/MilitaryWeapSilver
+**/AnimStarterPack
+
 .vscode
 .vs
 *.VC.db
