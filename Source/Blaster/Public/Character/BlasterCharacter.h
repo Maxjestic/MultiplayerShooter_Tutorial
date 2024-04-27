@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "BlasterCharacter.generated.h"
 
+class UCameraComponent;
+class USpringArmComponent;
 /**
  * Main character class in Blaster
  */
@@ -15,18 +17,31 @@ class BLASTER_API ABlasterCharacter : public ACharacter
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
+	/**
+	 * Default constructor
+	 * Sets up: Camera with spring arm
+	 */
 	ABlasterCharacter();
 
+	//~ Begin AActor Interface
+	virtual void Tick( float DeltaTime ) override;
+	//~ End AActor Interface
+
+	//~ Begin APawn Interface
+	virtual void SetupPlayerInputComponent( class UInputComponent* PlayerInputComponent ) override;
+	//~ End APawn Interface
+
 protected:
-	// Called when the game starts or when spawned
+	//~ Begin AActor Interface
 	virtual void BeginPlay() override;
+	//~ End AActor Interface
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+private:
+	/** Camera boom */
+	UPROPERTY( VisibleAnywhere, Category = "Camera" )
+	TObjectPtr<USpringArmComponent> SpringArmComponent;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+	/** Third person follow camera */
+	UPROPERTY( VisibleAnywhere, Category = "Camera" )
+	TObjectPtr<UCameraComponent> CameraComponent;
 };
