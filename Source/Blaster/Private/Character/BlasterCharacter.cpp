@@ -7,6 +7,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Camera/CameraComponent.h"
+#include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Input/InputConfigDataAsset.h"
@@ -27,6 +28,9 @@ ABlasterCharacter::ABlasterCharacter()
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>( TEXT( "FollowCamera" ) );
 	CameraComponent->SetupAttachment( SpringArmComponent, USpringArmComponent::SocketName );
 	CameraComponent->bUsePawnControlRotation = false;
+
+	OverheadWidget = CreateDefaultSubobject<UWidgetComponent>( TEXT( "OverheadWidget" ) );
+	OverheadWidget->SetupAttachment( GetRootComponent() );
 }
 
 void ABlasterCharacter::BeginPlay()
@@ -46,18 +50,17 @@ void ABlasterCharacter::Move( const FInputActionValue& InputActionValue )
 	const FRotator ControlRotation = GetControlRotation();
 	const FRotator MovementRotation( 0.f, ControlRotation.Yaw, 0.f );
 
-	if(MoveVector.Y)
+	if (MoveVector.Y)
 	{
-		const FVector ForwardDirection = MovementRotation.RotateVector(FVector::ForwardVector);
+		const FVector ForwardDirection = MovementRotation.RotateVector( FVector::ForwardVector );
 		AddMovementInput( ForwardDirection, MoveVector.Y );
 	}
 
-	if(MoveVector.X)
+	if (MoveVector.X)
 	{
-		const FVector ForwardDirection = MovementRotation.RotateVector(FVector::RightVector);
+		const FVector ForwardDirection = MovementRotation.RotateVector( FVector::RightVector );
 		AddMovementInput( ForwardDirection, MoveVector.X );
 	}
-	
 }
 
 void ABlasterCharacter::Look( const FInputActionValue& InputActionValue )

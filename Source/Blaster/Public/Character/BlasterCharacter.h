@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "BlasterCharacter.generated.h"
 
+class UWidgetComponent;
 class UInputConfigDataAsset;
 class UInputAction;
 struct FInputActionValue;
@@ -23,7 +24,7 @@ class BLASTER_API ABlasterCharacter : public ACharacter
 public:
 	/**
 	 * Default constructor
-	 * Sets up: CharacterMovement, Camera with spring arm
+	 * Sets up: CharacterMovement, Camera with spring arm, overhead widget
 	 */
 	ABlasterCharacter();
 
@@ -50,8 +51,13 @@ protected:
 	UPROPERTY( EditDefaultsOnly, Category = "Enhanced Input" )
 	TObjectPtr<UInputMappingContext> InputMappingContext;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enhanced Input")
+	UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Enhanced Input" )
 	TObjectPtr<UInputConfigDataAsset> InputActions;
+	
+	
+	/** Widget displayed over character's head */
+	UPROPERTY( EditAnywhere, BlueprintReadOnly )
+	TObjectPtr<UWidgetComponent> OverheadWidget;
 
 private:
 	/**
