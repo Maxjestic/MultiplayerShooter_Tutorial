@@ -15,6 +15,7 @@ ABlasterCharacter::ABlasterCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator( 0.f, 400.f, 0.f );
 
