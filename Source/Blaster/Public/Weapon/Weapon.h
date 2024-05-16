@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Weapon.generated.h"
 
+class UWidgetComponent;
 class USphereComponent;
 
 /** Enum defining current state of the weapon */
@@ -43,6 +44,10 @@ protected:
 	virtual void BeginPlay() override;
 	//~ End AActor Interface
 
+	/** Callback to sphere overlap */
+	UFUNCTION()
+	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
 private:
 	/** Represents weapon in world */
 	UPROPERTY( VisibleAnywhere, Category = "Weapon Properties" )
@@ -55,4 +60,7 @@ private:
 	/** Current state of the weapon */
 	UPROPERTY( VisibleAnywhere, Category = "Weapon Properties" )
 	EWeaponState WeaponState = EWeaponState::EWS_Initial;
+
+	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
+	TObjectPtr<UWidgetComponent> PickupWidget;
 };
