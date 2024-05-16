@@ -8,10 +8,6 @@
 
 class AWeapon;
 class UWidgetComponent;
-class UInputConfigDataAsset;
-class UInputAction;
-struct FInputActionValue;
-class UInputMappingContext;
 class UCameraComponent;
 class USpringArmComponent;
 /**
@@ -25,7 +21,7 @@ class BLASTER_API ABlasterCharacter : public ACharacter
 public:
 	/**
 	 * Default constructor
-	 * Sets up: CharacterMovement, Camera with spring arm, overhead widget
+	 * Sets up: Camera with spring arm, overhead widget
 	 */
 	ABlasterCharacter();
 
@@ -33,14 +29,6 @@ public:
 	virtual void Tick( float DeltaTime ) override;
 	virtual void GetLifetimeReplicatedProps( TArray<FLifetimeProperty>& OutLifetimeProps ) const override;
 	//~ End AActor Interface
-
-	//~ Begin APawn Interface
-	virtual void SetupPlayerInputComponent( UInputComponent* PlayerInputComponent ) override;
-	//~ End APawn Interface
-
-	//~ Begin ACharacter Interface
-	virtual void Jump() override;
-	//~ End ACharacter Interface
 
 	/** Setter for overlapping weapon, takes care of host */
 	void SetOverlappingWeapon( AWeapon* InOverlappingWeapon );
@@ -50,26 +38,11 @@ protected:
 	virtual void BeginPlay() override;
 	//~ End AActor Interface
 
-	/**
-	 * Enhanced Input Properties
-	 */
-	UPROPERTY( EditDefaultsOnly, Category = "Enhanced Input" )
-	TObjectPtr<UInputMappingContext> InputMappingContext;
-
-	UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Enhanced Input" )
-	TObjectPtr<UInputConfigDataAsset> InputActions;
-
 	/** Widget displayed over character's head */
 	UPROPERTY( EditAnywhere, BlueprintReadOnly )
 	TObjectPtr<UWidgetComponent> OverheadWidget;
 
 private:
-	/**
-	 * Enhanced Input Callbacks
-	 */
-	void Move( const FInputActionValue& InputActionValue );
-	void Look( const FInputActionValue& InputActionValue );
-
 	/** Camera boom */
 	UPROPERTY( VisibleAnywhere, Category = "Camera" )
 	TObjectPtr<USpringArmComponent> SpringArmComponent;
