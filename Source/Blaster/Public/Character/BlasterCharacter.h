@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "BlasterCharacter.generated.h"
 
+class AWeapon;
 class UWidgetComponent;
 class UInputConfigDataAsset;
 class UInputAction;
@@ -30,6 +31,7 @@ public:
 
 	//~ Begin AActor Interface
 	virtual void Tick( float DeltaTime ) override;
+	virtual void GetLifetimeReplicatedProps( TArray<FLifetimeProperty>& OutLifetimeProps ) const override;
 	//~ End AActor Interface
 
 	//~ Begin APawn Interface
@@ -39,6 +41,9 @@ public:
 	//~ Begin ACharacter Interface
 	virtual void Jump() override;
 	//~ End ACharacter Interface
+
+	/** Setter for overlapping weapon, takes care of host */
+	void SetOverlappingWeapon( AWeapon* InOverlappingWeapon );
 
 protected:
 	//~ Begin AActor Interface
@@ -53,8 +58,7 @@ protected:
 
 	UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Enhanced Input" )
 	TObjectPtr<UInputConfigDataAsset> InputActions;
-	
-	
+
 	/** Widget displayed over character's head */
 	UPROPERTY( EditAnywhere, BlueprintReadOnly )
 	TObjectPtr<UWidgetComponent> OverheadWidget;
@@ -73,4 +77,12 @@ private:
 	/** Third person follow camera */
 	UPROPERTY( VisibleAnywhere, Category = "Camera" )
 	TObjectPtr<UCameraComponent> CameraComponent;
+
+	/** Weapon which this character is currently overlapping */
+	UPROPERTY( ReplicatedUsing = OnRep_OVerlappingWeapon )
+	TObjectPtr<AWeapon> OverlappingWeapon;
+
+	/** OnRep notify for overlapping weapon */
+	UFUNCTION()
+	void OnRep_OverlappingWeapon( AWeapon* LastWeapon ) const;
 };

@@ -11,6 +11,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Input/InputConfigDataAsset.h"
+#include "Net/UnrealNetwork.h"
+#include "Weapon/Weapon.h"
 
 ABlasterCharacter::ABlasterCharacter()
 {
@@ -36,6 +38,57 @@ ABlasterCharacter::ABlasterCharacter()
 void ABlasterCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void ABlasterCharacter::Tick( float DeltaTime )
+{
+	Super::Tick( DeltaTime );
+}
+
+void ABlasterCharacter::GetLifetimeReplicatedProps( TArray<FLifetimeProperty>& OutLifetimeProps ) const
+{
+	Super::GetLifetimeReplicatedProps( OutLifetimeProps );
+
+	DOREPLIFETIME_CONDITION( ABlasterCharacter, OverlappingWeapon, COND_OwnerOnly );
+}
+
+void ABlasterCharacter::SetupPlayerInputComponent( UInputComponent* PlayerInputComponent )
+{
+	if (const APlayerController* PlayerController = Cast<APlayerController>( GetController() ))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(
+			PlayerController->GetLocalPlayer() ))
+		{
+			Subsystem->ClearAllMappings();
+			Subsystem->AddMappingContext( InputMappingContext, 0 );
+		}
+	}
+
+	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>( PlayerInputComponent ))
+	{
+		EnhancedInputComponent->BindAction( InputActions->MoveAction, ETriggerEvent::Triggered, this, &ThisClass::Move );
+		EnhancedInputComponent->BindAction( InputActions->LookAction, ETriggerEvent::Triggered, this, &ThisClass::Look );
+		EnhancedInputComponent->BindAction( InputActions->JumpAction, ETriggerEvent::Triggered, this, &ThisClass::Jump );
+	}
+}
+
+void ABlasterCharacter::Jump()
+{
+	Super::Jump();
+}
+
+void ABlasterCharacter::SetOverlappingWeapon( AWeapon* InOverlappingWeapon )
+{
+	if (IsLocallyControlled() && OverlappingWeapon)
+	{
+		OverlappingWeapon->ShowPickupWidget( false );
+	}
+
+	OverlappingWeapon = InOverlappingWeapon;
+	if (IsLocallyControlled() && OverlappingWeapon)
+	{
+		OverlappingWeapon->ShowPickupWidget( true );
+	}
 }
 
 void ABlasterCharacter::Move( const FInputActionValue& InputActionValue )
@@ -81,32 +134,15 @@ void ABlasterCharacter::Look( const FInputActionValue& InputActionValue )
 	}
 }
 
-void ABlasterCharacter::Tick( float DeltaTime )
+void ABlasterCharacter::OnRep_OverlappingWeapon( AWeapon* LastWeapon ) const
 {
-	Super::Tick( DeltaTime );
-}
-
-void ABlasterCharacter::SetupPlayerInputComponent( UInputComponent* PlayerInputComponent )
-{
-	if (const APlayerController* PlayerController = Cast<APlayerController>( GetController() ))
+	if (OverlappingWeapon)
 	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(
-			PlayerController->GetLocalPlayer() ))
-		{
-			Subsystem->ClearAllMappings();
-			Subsystem->AddMappingContext( InputMappingContext, 0 );
-		}
+		OverlappingWeapon->ShowPickupWidget( true );
 	}
 
-	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>( PlayerInputComponent ))
+	if (LastWeapon)
 	{
-		EnhancedInputComponent->BindAction( InputActions->MoveAction, ETriggerEvent::Triggered, this, &ThisClass::Move );
-		EnhancedInputComponent->BindAction( InputActions->LookAction, ETriggerEvent::Triggered, this, &ThisClass::Look );
-		EnhancedInputComponent->BindAction( InputActions->JumpAction, ETriggerEvent::Triggered, this, &ThisClass::Jump );
+		LastWeapon->ShowPickupWidget( false );
 	}
-}
-
-void ABlasterCharacter::Jump()
-{
-	Super::Jump();
 }

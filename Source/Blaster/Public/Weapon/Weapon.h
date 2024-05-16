@@ -39,6 +39,9 @@ public:
 	virtual void Tick( float DeltaTime ) override;
 	//~ End AActor Interface
 
+	/** Shows/hides pick up widget */
+	void ShowPickupWidget(const bool bShowWidget) const;
+
 protected:
 	//~ Begin AActor Interface
 	virtual void BeginPlay() override;
@@ -46,8 +49,12 @@ protected:
 
 	/** Callback to sphere overlap */
 	UFUNCTION()
-	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
+	virtual void OnSphereBeginOverlap( UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	                              int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult );
+	UFUNCTION()
+	virtual void OnSphereEndOverlap( UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	                              int32 OtherBodyIndex );
+	
 private:
 	/** Represents weapon in world */
 	UPROPERTY( VisibleAnywhere, Category = "Weapon Properties" )
@@ -61,6 +68,6 @@ private:
 	UPROPERTY( VisibleAnywhere, Category = "Weapon Properties" )
 	EWeaponState WeaponState = EWeaponState::EWS_Initial;
 
-	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
+	UPROPERTY( VisibleAnywhere, Category = "Weapon Properties" )
 	TObjectPtr<UWidgetComponent> PickupWidget;
 };
