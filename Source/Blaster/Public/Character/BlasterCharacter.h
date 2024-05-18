@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "BlasterCharacter.generated.h"
 
+class UCombatComponent;
 class AWeapon;
 class UWidgetComponent;
 class UCameraComponent;
@@ -27,11 +28,18 @@ public:
 
 	//~ Begin AActor Interface
 	virtual void Tick( float DeltaTime ) override;
-	virtual void GetLifetimeReplicatedProps( TArray<FLifetimeProperty>& OutLifetimeProps ) const override;
 	//~ End AActor Interface
 
+	//~ Begin ACharacter Interface
+	virtual void GetLifetimeReplicatedProps( TArray<FLifetimeProperty>& OutLifetimeProps ) const override;
+	virtual void PostInitializeComponents() override;
+	//~ BEnd ACharacter Interface
+	
 	/** Setter for overlapping weapon, takes care of host */
 	void SetOverlappingWeapon( AWeapon* InOverlappingWeapon );
+
+	/***/
+	void EquipWeapon() const;
 
 protected:
 	//~ Begin AActor Interface
@@ -54,6 +62,9 @@ private:
 	/** Weapon which this character is currently overlapping */
 	UPROPERTY( ReplicatedUsing = OnRep_OVerlappingWeapon )
 	TObjectPtr<AWeapon> OverlappingWeapon;
+
+	UPROPERTY( VisibleAnywhere )
+	TObjectPtr<UCombatComponent> Combat;
 
 	/** OnRep notify for overlapping weapon */
 	UFUNCTION()

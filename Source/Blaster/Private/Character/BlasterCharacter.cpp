@@ -4,6 +4,7 @@
 #include "Character/BlasterCharacter.h"
 
 #include "Camera/CameraComponent.h"
+#include "Component/CombatComponent.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -29,6 +30,9 @@ ABlasterCharacter::ABlasterCharacter()
 
 	OverheadWidget = CreateDefaultSubobject<UWidgetComponent>( TEXT( "OverheadWidget" ) );
 	OverheadWidget->SetupAttachment( GetRootComponent() );
+
+	Combat = CreateDefaultSubobject<UCombatComponent>( TEXT( "Combat" ) );
+	Combat->SetIsReplicated( true );
 }
 
 void ABlasterCharacter::BeginPlay()
@@ -48,28 +52,46 @@ void ABlasterCharacter::GetLifetimeReplicatedProps( TArray<FLifetimeProperty>& O
 	DOREPLIFETIME_CONDITION( ABlasterCharacter, OverlappingWeapon, COND_OwnerOnly );
 }
 
+void ABlasterCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	if ( Combat )
+	{
+		Combat->Character = this;
+	}
+}
+
 void ABlasterCharacter::SetOverlappingWeapon( AWeapon* InOverlappingWeapon )
 {
-	if (IsLocallyControlled() && OverlappingWeapon)
+	if ( IsLocallyControlled() && OverlappingWeapon )
 	{
 		OverlappingWeapon->ShowPickupWidget( false );
 	}
 
 	OverlappingWeapon = InOverlappingWeapon;
-	if (IsLocallyControlled() && OverlappingWeapon)
+	if ( IsLocallyControlled() && OverlappingWeapon )
 	{
 		OverlappingWeapon->ShowPickupWidget( true );
 	}
 }
 
+void ABlasterCharacter::EquipWeapon() const
+{
+	if ( HasAuthority() && Combat )
+	{
+		Combat->EquipWeapon( OverlappingWeapon );
+	}
+}
+
 void ABlasterCharacter::OnRep_OverlappingWeapon( AWeapon* LastWeapon ) const
 {
-	if (OverlappingWeapon)
+	if ( OverlappingWeapon )
 	{
 		OverlappingWeapon->ShowPickupWidget( true );
 	}
 
-	if (LastWeapon)
+	if ( LastWeapon )
 	{
 		LastWeapon->ShowPickupWidget( false );
 	}
