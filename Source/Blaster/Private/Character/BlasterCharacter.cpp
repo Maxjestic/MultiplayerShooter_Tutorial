@@ -91,6 +91,11 @@ void ABlasterCharacter::EquipWeapon() const
 	}
 }
 
+bool ABlasterCharacter::IsWeaponEquipped() const
+{
+	return Combat && Combat->EquippedWeapon;
+}
+
 void ABlasterCharacter::OnRep_OverlappingWeapon( AWeapon* LastWeapon ) const
 {
 	if ( OverlappingWeapon )

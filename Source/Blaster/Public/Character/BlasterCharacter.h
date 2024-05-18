@@ -41,6 +41,9 @@ public:
 	/** Called by PlayerController to equip weapon */
 	void EquipWeapon() const;
 
+	/** True if character has equipped weapon */
+	bool IsWeaponEquipped() const;
+
 protected:
 	//~ Begin AActor Interface
 	virtual void BeginPlay() override;

@@ -22,10 +22,11 @@ public:
 	/** Default constructor */
 	UCombatComponent();	
 	
-	//~ Begin AActorComponent Interface
+	//~ Begin UActorComponent Interface
 	virtual void TickComponent( float DeltaTime, ELevelTick TickType,
 								FActorComponentTickFunction* ThisTickFunction ) override;
-	//~ Begin AActorComponent Interface
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	//~ Begin UActorComponent Interface
 
 	void EquipWeapon( AWeapon* const WeaponToEquip);
 
@@ -39,6 +40,7 @@ private:
 	TObjectPtr<ABlasterCharacter> Character;
 	
 	/** Currently equipped weapon */
+	UPROPERTY(Replicated)
 	TObjectPtr<AWeapon> EquippedWeapon;
 
 	/*
