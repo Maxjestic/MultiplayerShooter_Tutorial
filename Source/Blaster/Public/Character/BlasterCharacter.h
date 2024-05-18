@@ -34,11 +34,11 @@ public:
 	virtual void GetLifetimeReplicatedProps( TArray<FLifetimeProperty>& OutLifetimeProps ) const override;
 	virtual void PostInitializeComponents() override;
 	//~ BEnd ACharacter Interface
-	
+
 	/** Setter for overlapping weapon, takes care of host */
 	void SetOverlappingWeapon( AWeapon* InOverlappingWeapon );
 
-	/***/
+	/** Called by PlayerController to equip weapon */
 	void EquipWeapon() const;
 
 protected:
@@ -69,4 +69,7 @@ private:
 	/** OnRep notify for overlapping weapon */
 	UFUNCTION()
 	void OnRep_OverlappingWeapon( AWeapon* LastWeapon ) const;
+
+	UFUNCTION( Server, Reliable )
+	void ServerEquip() const;
 };

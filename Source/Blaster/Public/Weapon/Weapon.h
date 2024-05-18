@@ -37,12 +37,14 @@ public:
 
 	//~ Begin AActor Interface
 	virtual void Tick( float DeltaTime ) override;
+	virtual void GetLifetimeReplicatedProps( TArray<FLifetimeProperty>& OutLifetimeProps ) const override;
 	//~ End AActor Interface
 
 	/** Shows/hides pick up widget */
 	void ShowPickupWidget( const bool bShowWidget ) const;
 
-	FORCEINLINE void SetWeaponState( const EWeaponState State ) { WeaponState = State; }
+	/** Sets weapon state */
+	void SetWeaponState( const EWeaponState State );
 
 protected:
 	//~ Begin AActor Interface
@@ -69,8 +71,11 @@ private:
 	TObjectPtr<USphereComponent> AreaSphere;
 
 	/** Current state of the weapon */
-	UPROPERTY( VisibleAnywhere, Category = "Weapon Properties" )
+	UPROPERTY( VisibleAnywhere, Category = "Weapon Properties", ReplicatedUsing = OnRep_WeaponState )
 	EWeaponState WeaponState = EWeaponState::EWS_Initial;
+
+	UFUNCTION()
+	void OnRep_WeaponState();
 
 	UPROPERTY( VisibleAnywhere, Category = "Weapon Properties" )
 	TObjectPtr<UWidgetComponent> PickupWidget;
