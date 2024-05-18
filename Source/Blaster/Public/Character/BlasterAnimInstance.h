@@ -36,5 +36,8 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")
 	bool bWeaponEquipped;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Movement")
+	bool bIsCrouched;
 	
 };

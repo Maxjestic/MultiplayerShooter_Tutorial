@@ -35,6 +35,10 @@ void ABlasterPlayerController::SetupInputComponent()
 	EnhancedInputComponent->BindAction( InputActions->LookAction, ETriggerEvent::Triggered, this, &ThisClass::Look );
 	EnhancedInputComponent->BindAction( InputActions->JumpAction, ETriggerEvent::Triggered, this, &ThisClass::Jump );
 	EnhancedInputComponent->BindAction( InputActions->EquipAction, ETriggerEvent::Triggered, this, &ThisClass::Equip );
+	EnhancedInputComponent->BindAction( InputActions->CrouchAction,
+	                                    ETriggerEvent::Triggered,
+	                                    this,
+	                                    &ThisClass::Crouch );
 }
 
 void ABlasterPlayerController::Move( const FInputActionValue& InputActionValue )
@@ -78,8 +82,23 @@ void ABlasterPlayerController::Jump()
 
 void ABlasterPlayerController::Equip()
 {
-	if (const ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(GetCharacter()))
+	if ( const ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>( GetCharacter() ) )
 	{
 		BlasterCharacter->EquipWeapon();
+	}
+}
+
+void ABlasterPlayerController::Crouch()
+{
+	if ( const ACharacter* BlasterCharacter = GetCharacter() )
+	{
+		if ( BlasterCharacter->bIsCrouched )
+		{
+			GetCharacter()->UnCrouch();
+		}
+		else
+		{
+			GetCharacter()->Crouch();
+		}
 	}
 }

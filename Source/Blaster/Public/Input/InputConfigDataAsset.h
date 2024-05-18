@@ -28,4 +28,7 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Enhanced Input")
 	TObjectPtr<UInputAction> EquipAction;	
+
+	UPROPERTY(EditAnywhere, Category = "Enhanced Input")
+	TObjectPtr<UInputAction> CrouchAction;	
 };

@@ -43,4 +43,5 @@ private:
 	void Look( const FInputActionValue& InputActionValue );
 	void Jump();
 	void Equip();
+	void Crouch();
 };

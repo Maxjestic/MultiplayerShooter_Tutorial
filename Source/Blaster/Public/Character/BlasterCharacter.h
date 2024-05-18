@@ -22,7 +22,7 @@ class BLASTER_API ABlasterCharacter : public ACharacter
 public:
 	/**
 	 * Default constructor
-	 * Sets up: Camera with spring arm, overhead widget
+	 * Sets up: Camera with spring arm, overhead widget, combat component
 	 */
 	ABlasterCharacter();
 
