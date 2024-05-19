@@ -44,4 +44,5 @@ private:
 	void Jump();
 	void Equip();
 	void Crouch();
+	void Aim( const FInputActionValue& InputActionValue );
 };

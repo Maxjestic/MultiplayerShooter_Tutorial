@@ -27,22 +27,34 @@ void UCombatComponent::GetLifetimeReplicatedProps( TArray<FLifetimeProperty>& Ou
 {
 	Super::GetLifetimeReplicatedProps( OutLifetimeProps );
 
-	DOREPLIFETIME(UCombatComponent, EquippedWeapon)
+	DOREPLIFETIME( UCombatComponent, EquippedWeapon )
+	DOREPLIFETIME( UCombatComponent, bAiming )
 }
 
 void UCombatComponent::EquipWeapon( AWeapon* const WeaponToEquip )
 {
 	if ( Character == nullptr || WeaponToEquip == nullptr )
 	{
-		return;		
+		return;
 	}
-	
+
 	EquippedWeapon = WeaponToEquip;
 	EquippedWeapon->SetWeaponState( EWeaponState::EWS_Equipped );
 	if ( const USkeletalMeshSocket* HandSocket = Character->GetMesh()->
-															GetSocketByName( FName( "RightHandSocket" ) ) )
+	                                                        GetSocketByName( FName( "RightHandSocket" ) ) )
 	{
 		HandSocket->AttachActor( EquippedWeapon, Character->GetMesh() );
 	}
 	EquippedWeapon->SetOwner( Character );
+}
+
+void UCombatComponent::AimWeapon( const bool bIsAiming )
+{
+	bAiming = bIsAiming;
+	ServerAim( bIsAiming );
+}
+
+void UCombatComponent::ServerAim_Implementation( const bool bIsAiming )
+{
+	bAiming = bIsAiming;
 }

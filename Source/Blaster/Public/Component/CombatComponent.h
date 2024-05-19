@@ -20,28 +20,36 @@ class BLASTER_API UCombatComponent : public UActorComponent
 
 public:
 	/** Default constructor */
-	UCombatComponent();	
-	
+	UCombatComponent();
+
 	//~ Begin UActorComponent Interface
 	virtual void TickComponent( float DeltaTime, ELevelTick TickType,
-								FActorComponentTickFunction* ThisTickFunction ) override;
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	                            FActorComponentTickFunction* ThisTickFunction ) override;
+	virtual void GetLifetimeReplicatedProps( TArray<FLifetimeProperty>& OutLifetimeProps ) const override;
 	//~ Begin UActorComponent Interface
 
-	void EquipWeapon( AWeapon* const WeaponToEquip);
+	void EquipWeapon( AWeapon* const WeaponToEquip );
+	void AimWeapon( const bool bIsAiming );
 
 protected:
 	//~ Begin AActor Interface
 	virtual void BeginPlay() override;
 	//~ End AActor Interface
 
+	UFUNCTION( Server, Reliable )
+	void ServerAim( const bool bIsAiming );
+
 private:
 	/** Owner of the component */
 	TObjectPtr<ABlasterCharacter> Character;
-	
+
 	/** Currently equipped weapon */
-	UPROPERTY(Replicated)
+	UPROPERTY( Replicated )
 	TObjectPtr<AWeapon> EquippedWeapon;
+
+	/** Aiming "state" */
+	UPROPERTY( Replicated )
+	bool bAiming = false;
 
 	/*
 	 * Friends

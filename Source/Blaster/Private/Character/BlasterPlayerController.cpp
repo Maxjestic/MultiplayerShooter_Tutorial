@@ -39,6 +39,8 @@ void ABlasterPlayerController::SetupInputComponent()
 	                                    ETriggerEvent::Triggered,
 	                                    this,
 	                                    &ThisClass::Crouch );
+	EnhancedInputComponent->BindAction( InputActions->AimAction, ETriggerEvent::Started, this, &ThisClass::Aim );
+	EnhancedInputComponent->BindAction( InputActions->AimAction, ETriggerEvent::Completed, this, &ThisClass::Aim );
 }
 
 void ABlasterPlayerController::Move( const FInputActionValue& InputActionValue )
@@ -100,5 +102,13 @@ void ABlasterPlayerController::Crouch()
 		{
 			GetCharacter()->Crouch();
 		}
+	}
+}
+
+void ABlasterPlayerController::Aim( const FInputActionValue& InputActionValue )
+{
+	if ( const ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>( GetCharacter() ) )
+	{
+		BlasterCharacter->AimWeapon( InputActionValue.Get<bool>() );
 	}
 }

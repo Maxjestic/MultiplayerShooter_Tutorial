@@ -39,5 +39,8 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")
 	bool bIsCrouched;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Movement")
+	bool bIsAiming;
 	
 };
