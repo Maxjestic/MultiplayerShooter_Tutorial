@@ -4,6 +4,7 @@
 
 #include "Character/BlasterCharacter.h"
 #include "Engine/SkeletalMeshSocket.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "Weapon/Weapon.h"
 
@@ -15,6 +16,15 @@ UCombatComponent::UCombatComponent()
 void UCombatComponent::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void UCombatComponent::OnRep_EquippedWeapon() const
+{
+	if(EquippedWeapon && Character)
+	{		
+		Character->GetCharacterMovement()->bOrientRotationToMovement = false;
+		Character->bUseControllerRotationYaw = true;
+	}
 }
 
 void UCombatComponent::TickComponent( float DeltaTime, ELevelTick TickType,
@@ -46,6 +56,8 @@ void UCombatComponent::EquipWeapon( AWeapon* const WeaponToEquip )
 		HandSocket->AttachActor( EquippedWeapon, Character->GetMesh() );
 	}
 	EquippedWeapon->SetOwner( Character );
+	Character->GetCharacterMovement()->bOrientRotationToMovement = false;
+	Character->bUseControllerRotationYaw = true;
 }
 
 void UCombatComponent::AimWeapon( const bool bIsAiming )

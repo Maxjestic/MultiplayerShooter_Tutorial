@@ -39,12 +39,15 @@ protected:
 	UFUNCTION( Server, Reliable )
 	void ServerAim( const bool bIsAiming );
 
+	UFUNCTION()
+	void OnRep_EquippedWeapon() const;
+
 private:
 	/** Owner of the component */
 	TObjectPtr<ABlasterCharacter> Character;
 
 	/** Currently equipped weapon */
-	UPROPERTY( Replicated )
+	UPROPERTY( ReplicatedUsing = OnRep_EquippedWeapon )
 	TObjectPtr<AWeapon> EquippedWeapon;
 
 	/** Aiming "state" */

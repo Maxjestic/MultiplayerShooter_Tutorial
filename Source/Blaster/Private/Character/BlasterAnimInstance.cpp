@@ -11,23 +11,37 @@ void UBlasterAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
 
-	BlasterCharacter = Cast<ABlasterCharacter>(TryGetPawnOwner());
+	BlasterCharacter = Cast<ABlasterCharacter>( TryGetPawnOwner() );
 }
 
 void UBlasterAnimInstance::NativeUpdateAnimation( float DeltaSeconds )
 {
 	Super::NativeUpdateAnimation( DeltaSeconds );
 
-	if(!BlasterCharacter)
+	if ( !BlasterCharacter )
 	{
-		BlasterCharacter = Cast<ABlasterCharacter>(TryGetPawnOwner());
+		BlasterCharacter = Cast<ABlasterCharacter>( TryGetPawnOwner() );
 		return;
 	}
 
-	Speed = UKismetMathLibrary::VSizeXY(BlasterCharacter->GetVelocity());
+	Speed = UKismetMathLibrary::VSizeXY( BlasterCharacter->GetVelocity() );
 	bIsInAir = BlasterCharacter->GetCharacterMovement()->IsFalling();
 	bIsMoving = BlasterCharacter->GetCharacterMovement()->GetCurrentAcceleration().Size() > 0.f;
 	bWeaponEquipped = BlasterCharacter->IsWeaponEquipped();
 	bIsCrouched = BlasterCharacter->bIsCrouched;
 	bIsAiming = BlasterCharacter->IsAiming();
+
+	// Offset Yaw for strafing
+	const FRotator AimRotation = BlasterCharacter->GetBaseAimRotation();
+	const FRotator MovementRotation = UKismetMathLibrary::MakeRotFromX( BlasterCharacter->GetVelocity() );
+	FRotator DeltaRot = UKismetMathLibrary::NormalizedDeltaRotator( MovementRotation, AimRotation );
+	DeltaRotation = FMath::RInterpTo( DeltaRotation, DeltaRot, DeltaSeconds, 6.f );
+	YawOffset = DeltaRotation.Yaw;
+
+	CharacterRotationLastFrame = CharacterRotation;
+	CharacterRotation = BlasterCharacter->GetActorRotation();
+	const FRotator Delta = UKismetMathLibrary::NormalizedDeltaRotator( CharacterRotation, CharacterRotationLastFrame );
+	const float Target = Delta.Yaw / DeltaSeconds;
+	const float Interp = FMath::FInterpTo( Lean, Target, DeltaSeconds, 6.f );
+	Lean = FMath::Clamp( Interp, -90.f, 90.f );
 }
